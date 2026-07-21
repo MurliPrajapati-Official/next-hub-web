@@ -1,26 +1,162 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-background: #303841;
+  --color-surface: #3A4750;
+  --color-foreground: #F3F3F3;
+  --color-primary: #2185D5;
+  --color-border: rgba(243, 243, 243, 0.1);
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 6px;
+  --radius-xl: 6px;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+:root {
+  --background: #303841;
+  --surface: #3A4750;
+  --foreground: #F3F3F3;
+  --primary: #2185D5;
+  --border: rgba(243, 243, 243, 0.1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Smooth transitions on all interactive elements */
+a,
+button,
+input,
+select,
+textarea {
+  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+/* Base heading styles */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Selection color */
+::selection {
+  background: var(--primary);
+  color: #fff;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--surface);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* Custom Rolling Rock Loader */
+.rolling-rock-loader {
+  position: relative;
+  font-size: 16px;
+  width: 5.5em;
+  height: 5.5em;
+}
+
+.rolling-rock-loader::before {
+  content: '';
+  position: absolute;
+  transform: translate(-50%, -50%) rotate(45deg);
+  height: 100%;
+  width: 4px;
+  background: var(--foreground);
+  left: 50%;
+  top: 50%;
+  opacity: 0.8;
+}
+
+.rolling-rock-loader::after {
+  content: '';
+  position: absolute;
+  left: 0.2em;
+  bottom: 0.18em;
+  width: 1em;
+  height: 1em;
+  background-color: #ff9f43;
+  /* Developer-accent orange */
+  border-radius: 15%;
+  animation: rollingRock 2.5s cubic-bezier(.79, 0, .47, .97) infinite;
+}
+
+@keyframes rollingRock {
+  0% {
+    transform: translate(0, -1em) rotate(-45deg)
+  }
+
+  5% {
+    transform: translate(0, -1em) rotate(-50deg)
+  }
+
+  20% {
+    transform: translate(1em, -2em) rotate(47deg)
+  }
+
+  25% {
+    transform: translate(1em, -2em) rotate(45deg)
+  }
+
+  30% {
+    transform: translate(1em, -2em) rotate(40deg)
+  }
+
+  45% {
+    transform: translate(2em, -3em) rotate(137deg)
+  }
+
+  50% {
+    transform: translate(2em, -3em) rotate(135deg)
+  }
+
+  55% {
+    transform: translate(2em, -3em) rotate(130deg)
+  }
+
+  70% {
+    transform: translate(3em, -4em) rotate(217deg)
+  }
+
+  75% {
+    transform: translate(3em, -4em) rotate(220deg)
+  }
+
+  100% {
+    transform: translate(0, -1em) rotate(-225deg)
+  }
 }
