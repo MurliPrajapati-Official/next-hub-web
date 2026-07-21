@@ -63,7 +63,7 @@ export default function SponsorsPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {sponsors.map((sponsor, i) => (
-          <div key={i} className="border border-border bg-surface flex flex-col rounded-md group transition-all duration-200 hover:border-primary/30 hover:-translate-y-1">
+          <div key={i} className="border border-border bg-surface flex flex-col rounded-none group transition-all duration-200 hover:border-primary/30 hover:-translate-y-1">
             <div className="p-6 flex flex-col flex-grow">
               <div className="flex justify-between items-start mb-6">
                 <div className="h-12 w-12 bg-background border border-border flex items-center justify-center text-xl font-bold font-mono rounded-md">
@@ -105,3 +105,4 @@ export default function SponsorsPage() {
     </div>
   );
 }
+

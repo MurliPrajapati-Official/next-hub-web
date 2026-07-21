@@ -101,7 +101,7 @@ export default function EventsPage() {
               <div key={event.id} className="relative">
                 <div className="absolute -left-[41px] top-1.5 h-4 w-4 bg-background border-2 border-primary rounded-sm"></div>
                 
-                <div className="border border-border bg-surface p-6 rounded-md transition-all duration-200 hover:border-primary/40 hover:-translate-y-0.5">
+                <div className="border border-border bg-surface p-6 rounded-none transition-all duration-200 hover:border-primary/40 hover:-translate-y-0.5">
                   <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-4">
                     <div>
                       <h3 className="text-xl font-bold font-sans mb-2">{event.title}</h3>
@@ -181,3 +181,4 @@ export default function EventsPage() {
     </div>
   );
 }
+

@@ -1,24 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { SlidersHorizontal, ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, CheckCircle2, Circle } from "lucide-react";
 
 const categories = [
-  "All",
-  "GitHub",
-  "AI",
-  "Learning",
-  "Roadmaps",
-  "UI Kits",
-  "Design",
-  "Backend",
-  "Frontend",
-  "DevOps",
-  "Cloud",
-  "Security",
-  "Open Source",
-  "Databases",
-  "Interview",
+  "All", "GitHub", "AI", "Learning", "Roadmaps", "UI Kits",
+  "Design", "Backend", "Frontend", "DevOps", "Cloud",
+  "Security", "Open Source", "Databases", "Interview",
 ];
 
 const types = [
@@ -27,26 +15,26 @@ const types = [
   { value: "documentation", label: "Documentation" },
   { value: "course", label: "Courses" },
   { value: "cheatsheet", label: "Cheat Sheets" },
-  { value: "library", label: "Libraries / Frameworks" },
+  { value: "library", label: "Libraries" },
   { value: "aitool", label: "AI Tools" },
 ];
 
 const difficulties = [
-  { value: "All", label: "All Levels" },
+  { value: "All", label: "All" },
   { value: "beginner", label: "Beginner" },
   { value: "intermediate", label: "Intermediate" },
   { value: "advanced", label: "Advanced" },
 ];
 
 const pricingOptions = [
-  { value: "All", label: "All Models" },
-  { value: "free", label: "Free / Open Source" },
+  { value: "All", label: "All" },
+  { value: "free", label: "Free" },
   { value: "freemium", label: "Freemium" },
   { value: "paid", label: "Paid" },
 ];
 
 const sortOptions = [
-  { value: "popular", label: "Popularity" },
+  { value: "popular", label: "Popular" },
   { value: "rating", label: "Top Rated" },
   { value: "latest", label: "Latest" },
   { value: "oldest", label: "Oldest" },
@@ -65,6 +53,67 @@ interface CategoryFiltersProps {
   onSelectSort: (sort: string) => void;
 }
 
+function CollapsibleSection({
+  title,
+  defaultOpen = true,
+  children,
+}: {
+  title: string;
+  defaultOpen?: boolean;
+  children: React.ReactNode;
+}) {
+  const [isOpen, setIsOpen] = React.useState(defaultOpen);
+
+  return (
+    <div className="border-b border-border/40 py-4 last:border-0">
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between py-2 text-sm font-bold text-foreground hover:text-primary transition-colors cursor-pointer"
+      >
+        {title}
+        <ChevronDown
+          className={`w-4 h-4 transition-transform duration-200 text-foreground/40 ${isOpen ? "rotate-180" : ""}`}
+        />
+      </button>
+      <div
+        className={`overflow-hidden transition-all duration-300 ${
+          isOpen ? "max-h-[800px] opacity-100 mt-3" : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="flex flex-col gap-3 pb-2">{children}</div>
+      </div>
+    </div>
+  );
+}
+
+function RadioOption({ 
+  label, 
+  isActive, 
+  onClick 
+}: { 
+  label: string; 
+  isActive: boolean; 
+  onClick: () => void 
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`group flex items-center gap-3 w-full text-left transition-colors cursor-pointer ${
+        isActive ? "text-primary" : "text-foreground/60 hover:text-foreground"
+      }`}
+    >
+      {isActive ? (
+        <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+      ) : (
+        <Circle className="w-4 h-4 text-foreground/20 group-hover:border-primary shrink-0 transition-colors" />
+      )}
+      <span className="text-sm font-medium">{label}</span>
+    </button>
+  );
+}
+
 export function CategoryFilters({
   activeCategory,
   onSelectCategory,
@@ -79,7 +128,6 @@ export function CategoryFilters({
 }: CategoryFiltersProps) {
   const [isMobileExpanded, setIsMobileExpanded] = React.useState(false);
 
-  // Helper to count active filter/sorting modifications (ignoring default "All" and "popular")
   const getActiveFiltersCount = () => {
     let count = 0;
     if (activeCategory !== "All") count++;
@@ -93,157 +141,92 @@ export function CategoryFilters({
   const activeCount = getActiveFiltersCount();
 
   const filterContent = (
-    <div className="space-y-6 w-full">
-      {/* Category Dropdown */}
-      <div className="space-y-2">
-        <label htmlFor="category-select" className="text-xs font-mono text-foreground/50 uppercase tracking-widest block">
-          Topic / Category
-        </label>
-        <select
-          id="category-select"
-          value={activeCategory}
-          onChange={(e) => onSelectCategory(e.target.value)}
-          className="w-full h-10 px-3 border border-border bg-surface text-foreground text-sm rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all cursor-pointer"
-        >
-          {categories.map((category) => (
-            <option key={category} value={category} className="bg-surface text-foreground">
-              {category}
-            </option>
-          ))}
-        </select>
-      </div>
+    <div className="flex flex-col">
+      <CollapsibleSection title="Topic / Category">
+        {categories.map((cat) => (
+          <RadioOption
+            key={cat}
+            label={cat}
+            isActive={activeCategory === cat}
+            onClick={() => onSelectCategory(cat)}
+          />
+        ))}
+      </CollapsibleSection>
 
-      {/* Content Type Dropdown */}
-      <div className="space-y-2">
-        <label htmlFor="type-select" className="text-xs font-mono text-foreground/50 uppercase tracking-widest block">
-          Format / Type
-        </label>
-        <select
-          id="type-select"
-          value={activeType}
-          onChange={(e) => onSelectType(e.target.value)}
-          className="w-full h-10 px-3 border border-border bg-surface text-foreground text-sm rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all cursor-pointer"
-        >
-          {types.map((type) => (
-            <option key={type.value} value={type.value} className="bg-surface text-foreground">
-              {type.label}
-            </option>
-          ))}
-        </select>
-      </div>
+      <CollapsibleSection title="Format" defaultOpen={false}>
+        {types.map((type) => (
+          <RadioOption
+            key={type.value}
+            label={type.label}
+            isActive={activeType === type.value}
+            onClick={() => onSelectType(type.value)}
+          />
+        ))}
+      </CollapsibleSection>
 
-      {/* Difficulty Level Options */}
-      <div className="space-y-2">
-        <span className="text-xs font-mono text-foreground/50 uppercase tracking-widest block">
-          Difficulty Level
-        </span>
-        <div className="grid grid-cols-2 gap-1.5">
-          {difficulties.map((diff) => {
-            const isActive = activeDifficulty === diff.value;
-            return (
-              <button
-                key={diff.value}
-                type="button"
-                onClick={() => onSelectDifficulty(diff.value)}
-                className={`px-2 py-2 text-xs font-medium border rounded-md transition-all text-center truncate cursor-pointer ${
-                  isActive
-                    ? "bg-primary border-primary text-[#F3F3F3] font-semibold"
-                    : "bg-surface border-border text-foreground/70 hover:bg-surface/75 hover:text-foreground"
-                }`}
-              >
-                {diff.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
+      <CollapsibleSection title="Difficulty" defaultOpen={false}>
+        {difficulties.map((diff) => (
+          <RadioOption
+            key={diff.value}
+            label={diff.label}
+            isActive={activeDifficulty === diff.value}
+            onClick={() => onSelectDifficulty(diff.value)}
+          />
+        ))}
+      </CollapsibleSection>
 
-      {/* Pricing / Access Model Options */}
-      <div className="space-y-2">
-        <span className="text-xs font-mono text-foreground/50 uppercase tracking-widest block">
-          Access / Model
-        </span>
-        <div className="grid grid-cols-2 gap-1.5">
-          {pricingOptions.map((price) => {
-            const isActive = activePricing === price.value;
-            return (
-              <button
-                key={price.value}
-                type="button"
-                onClick={() => onSelectPricing(price.value)}
-                className={`px-2 py-2 text-xs font-medium border rounded-md transition-all text-center truncate cursor-pointer ${
-                  isActive
-                    ? "bg-primary border-primary text-[#F3F3F3] font-semibold"
-                    : "bg-surface border-border text-foreground/70 hover:bg-surface/75 hover:text-foreground"
-                }`}
-                title={price.label}
-              >
-                {price.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
+      <CollapsibleSection title="Access / Pricing" defaultOpen={false}>
+        {pricingOptions.map((price) => (
+          <RadioOption
+            key={price.value}
+            label={price.label}
+            isActive={activePricing === price.value}
+            onClick={() => onSelectPricing(price.value)}
+          />
+        ))}
+      </CollapsibleSection>
 
-      {/* Sort Order Options */}
-      <div className="space-y-2 pt-4 border-t border-border/40">
-        <span className="text-xs font-mono text-foreground/50 uppercase tracking-widest block">
-          Sort Order
-        </span>
-        <div className="grid grid-cols-2 gap-1.5">
-          {sortOptions.map((option) => {
-            const isActive = activeSort === option.value;
-            return (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => onSelectSort(option.value)}
-                className={`px-2 py-2 text-xs font-medium border rounded-md transition-all text-center truncate cursor-pointer ${
-                  isActive
-                    ? "bg-primary border-primary text-[#F3F3F3] font-semibold"
-                    : "bg-surface border-border text-foreground/70 hover:bg-surface/75 hover:text-foreground"
-                }`}
-              >
-                {option.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
+      <CollapsibleSection title="Sort Order" defaultOpen={false}>
+        {sortOptions.map((option) => (
+          <RadioOption
+            key={option.value}
+            label={option.label}
+            isActive={activeSort === option.value}
+            onClick={() => onSelectSort(option.value)}
+          />
+        ))}
+      </CollapsibleSection>
     </div>
   );
 
   return (
     <>
-      {/* Mobile Collapsible Accordion layout */}
-      <div className="md:hidden w-full space-y-2">
+      <div className="md:hidden w-full mb-4">
         <button
           type="button"
           onClick={() => setIsMobileExpanded(!isMobileExpanded)}
-          className="w-full flex items-center justify-between h-10 px-4 border border-border bg-surface text-foreground text-sm font-medium rounded-md hover:border-foreground/20 transition-all cursor-pointer"
+          className="w-full flex items-center justify-between h-12 px-4 bg-surface text-foreground text-sm font-medium rounded-none border border-border hover:bg-surface-hover transition-all cursor-pointer"
         >
-          <div className="flex items-center gap-2">
-            <SlidersHorizontal className="w-4 h-4 text-primary" />
-            <span>Filters & Sorting</span>
+          <span className="flex items-center gap-2">
+            Filters
             {activeCount > 0 && (
-              <span className="flex items-center justify-center bg-primary text-[#F3F3F3] text-[10px] font-bold font-mono h-5 px-1.5 rounded-full">
+              <span className="flex items-center justify-center bg-primary text-white text-[10px] font-bold h-5 px-1.5 rounded-full">
                 {activeCount}
               </span>
             )}
-          </div>
-          {isMobileExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          </span>
+          <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isMobileExpanded ? "rotate-180" : ""}`} />
         </button>
 
         {isMobileExpanded && (
-          <div className="p-4 border border-border bg-surface/30 rounded-md animate-in slide-in-from-top-2 duration-150">
+          <div className="mt-2 p-4 bg-surface border border-border rounded-none">
             {filterContent}
           </div>
         )}
       </div>
 
-      {/* Desktop default sidebar layout */}
       <div className="hidden md:block w-full">
-        <div className="bg-surface/30 p-4 border border-border rounded-md">
+        <div className="p-6 bg-surface/30 border border-border/40 rounded-none">
           {filterContent}
         </div>
       </div>

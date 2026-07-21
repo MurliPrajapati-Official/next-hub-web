@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { 
@@ -18,11 +19,24 @@ import {
   ArrowUpRight,
   ExternalLink 
 } from "lucide-react";
+import { useBookmarks } from "@/hooks/useBookmarks";
+import { useAuth } from "@/hooks/useAuth";
+import { mockResources } from "@/data/resources";
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [apiKey, setApiKey] = useState("");
   const [isCopied, setIsCopied] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
+  
+  const { logout, isLoggedIn, isLoaded } = useAuth();
+
+  // If not logged in, redirect to login page (mockup protection)
+  useEffect(() => {
+    if (isLoaded && !isLoggedIn) {
+      router.push("/login");
+    }
+  }, [isLoggedIn, isLoaded, router]);
 
   const mockUser = {
     username: "dev_workspace_one",
@@ -32,11 +46,10 @@ export default function DashboardPage() {
     status: "SYSTEM_ACCESS: GRANTED"
   };
 
-  const savedResources = [
-    { id: "1", title: "Next.js App Router Documentation", category: "Frontend", url: "https://nextjs.org/docs" },
-    { id: "5", title: "System Design Primer", category: "Interview", url: "https://github.com/donnemartin/system-design-primer" },
-    { id: "18", title: "Shadcn/UI Component Library", category: "UI Kits", url: "https://ui.shadcn.com" },
-  ];
+  const { bookmarkedIds, removeBookmark } = useBookmarks();
+  
+  // Get actual bookmarked resources from mock data based on saved IDs
+  const savedResources = mockResources.filter(res => bookmarkedIds.includes(res.id));
 
   const userSubmissions = [
     { id: "s1", title: "Mastering Postgres Triggers", category: "Databases", status: "approved", date: "2026-07-15" },
@@ -61,7 +74,7 @@ export default function DashboardPage() {
   return (
     <div className="w-full px-4 md:px-8 py-12">
       {/* Dashboard Header Banner */}
-      <div className="border border-border bg-surface p-6 rounded-md mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+      <div className="border border-border bg-surface p-6 rounded-none mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div className="flex items-center gap-4">
           <div className="h-16 w-16 bg-primary/10 border border-primary/25 rounded-md flex items-center justify-center text-primary font-mono text-2xl font-bold select-none">
             M
@@ -81,12 +94,15 @@ export default function DashboardPage() {
           <div className="hidden lg:block font-mono text-xs text-emerald-400 bg-emerald-500/5 border border-emerald-500/10 px-3 py-2 rounded">
             {mockUser.status}
           </div>
-          <Link href="/">
-            <Button variant="outline" size="sm" className="h-10 text-red-400 border-red-500/20 hover:bg-red-500/5 hover:text-red-300">
-              <LogOut className="mr-2 h-4 w-4" />
-              Sign Out
-            </Button>
-          </Link>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="h-10 text-red-400 border-red-500/20 hover:bg-red-500/5 hover:text-red-300"
+            onClick={() => logout()}
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            Sign Out
+          </Button>
         </div>
       </div>
 
@@ -125,11 +141,11 @@ export default function DashboardPage() {
               {/* Quick Stats Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {[
-                  { label: "Bookmarked Resources", count: "12", desc: "Saved directories & tools" },
+                  { label: "Bookmarked Resources", count: savedResources.length.toString(), desc: "Saved directories & tools" },
                   { label: "Submissions Review", count: "3", desc: "Submitted community links" },
                   { label: "API Requests / month", count: "142", desc: "Terminal search triggers" },
                 ].map((stat, i) => (
-                  <div key={i} className="border border-border bg-surface/30 p-5 rounded-md text-left">
+                  <div key={i} className="border border-border bg-surface/30 p-5 rounded-none text-left">
                     <div className="text-2xl font-bold font-sans text-foreground mb-1">{stat.count}</div>
                     <div className="text-xs font-mono text-primary uppercase tracking-wider mb-2">{stat.label}</div>
                     <p className="text-xs text-foreground/50">{stat.desc}</p>
@@ -138,7 +154,7 @@ export default function DashboardPage() {
               </div>
 
               {/* Recent Saved Resources snippet */}
-              <div className="border border-border bg-surface p-6 rounded-md">
+              <div className="border border-border bg-surface p-6 rounded-none">
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="font-bold text-lg font-sans">Recent Saved Items</h3>
                   <button onClick={() => setActiveTab("saved")} className="text-xs font-mono text-primary hover:underline flex items-center">
@@ -165,7 +181,7 @@ export default function DashboardPage() {
           )}
 
           {activeTab === "saved" && (
-            <div className="border border-border bg-surface p-6 rounded-md space-y-6">
+            <div className="border border-border bg-surface p-6 rounded-none space-y-6">
               <div>
                 <h3 className="font-bold text-lg font-sans mb-1 text-left">Bookmarked Resources</h3>
                 <p className="text-xs text-foreground/50 font-mono text-left">// Resources you saved to review later.</p>
@@ -180,7 +196,7 @@ export default function DashboardPage() {
                       </Badge>
                     </div>
                     <div className="flex gap-3">
-                      <Button variant="ghost" size="sm" className="text-xs text-foreground/50 hover:text-red-400">
+                      <Button variant="ghost" size="sm" className="text-xs text-foreground/50 hover:text-red-400" onClick={() => removeBookmark(res.id)}>
                         Remove
                       </Button>
                       <a href={res.url} target="_blank" rel="noopener noreferrer">
@@ -196,7 +212,7 @@ export default function DashboardPage() {
           )}
 
           {activeTab === "submissions" && (
-            <div className="border border-border bg-surface p-6 rounded-md space-y-6">
+            <div className="border border-border bg-surface p-6 rounded-none space-y-6">
               <div className="flex justify-between items-center flex-wrap gap-4">
                 <div className="text-left">
                   <h3 className="font-bold text-lg font-sans mb-1">Your Submissions</h3>
@@ -237,7 +253,7 @@ export default function DashboardPage() {
           )}
 
           {activeTab === "apikeys" && (
-            <div className="border border-border bg-surface p-6 rounded-md space-y-6">
+            <div className="border border-border bg-surface p-6 rounded-none space-y-6">
               <div>
                 <h3 className="font-bold text-lg font-sans mb-1 text-left">Developer API Keys</h3>
                 <p className="text-xs text-foreground/50 font-mono text-left">// Integrate Next Hub directory searches directly into your custom dev tools.</p>
@@ -270,7 +286,7 @@ export default function DashboardPage() {
           )}
 
           {activeTab === "settings" && (
-            <div className="border border-border bg-surface p-6 rounded-md space-y-6">
+            <div className="border border-border bg-surface p-6 rounded-none space-y-6">
               <div>
                 <h3 className="font-bold text-lg font-sans mb-1 text-left">Account Settings</h3>
                 <p className="text-xs text-foreground/50 font-mono text-left">// Modify configuration and preferences.</p>
@@ -320,3 +336,4 @@ export default function DashboardPage() {
     </div>
   );
 }
+

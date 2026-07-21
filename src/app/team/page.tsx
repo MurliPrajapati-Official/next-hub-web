@@ -80,7 +80,7 @@ export default function TeamPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {team.map((member, i) => (
-          <div key={i} className="group border border-border bg-surface flex flex-col rounded-md transition-all duration-200 hover:border-primary/30 hover:-translate-y-1">
+          <div key={i} className="group border border-border bg-surface flex flex-col rounded-none transition-all duration-200 hover:border-primary/30 hover:-translate-y-1">
             {/* Portrait placeholder */}
             <div className="aspect-[3/4] bg-background relative overflow-hidden border-b border-border rounded-t-md">
               <div className="absolute inset-0 flex items-center justify-center text-4xl font-bold text-foreground/20 font-mono select-none">
@@ -115,3 +115,4 @@ export default function TeamPage() {
     </div>
   );
 }
+

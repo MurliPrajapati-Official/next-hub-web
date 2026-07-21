@@ -94,7 +94,7 @@ export default function CommunityPage() {
         {/* Main Feed */}
         <div className="lg:col-span-3 space-y-4">
           {posts.map((post) => (
-            <div key={post.id} className="border border-border bg-surface p-6 rounded-md transition-all duration-200 hover:border-primary/30 hover:-translate-y-0.5">
+            <div key={post.id} className="border border-border bg-surface p-6 rounded-none transition-all duration-200 hover:border-primary/30 hover:-translate-y-0.5">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className="h-8 w-8 bg-primary/10 text-primary flex items-center justify-center font-bold text-sm border border-primary/20 rounded-md">
@@ -142,7 +142,7 @@ export default function CommunityPage() {
 
         {/* Sidebar */}
         <div className="space-y-6">
-          <div className="border border-border bg-surface p-5 rounded-md">
+          <div className="border border-border bg-surface p-5 rounded-none">
             <h3 className="font-bold text-sm uppercase tracking-wider mb-4 border-b border-border pb-2">Trending Tags</h3>
             <div className="flex flex-wrap gap-2">
               {["#react", "#system-design", "#rust", "#ai-tools", "#career", "#nextjs", "#docker"].map(tag => (
@@ -151,7 +151,7 @@ export default function CommunityPage() {
             </div>
           </div>
           
-          <div className="border border-border bg-surface p-5 rounded-md">
+          <div className="border border-border bg-surface p-5 rounded-none">
             <h3 className="font-bold text-sm uppercase tracking-wider mb-4 border-b border-border pb-2">Top Contributors</h3>
             <ul className="space-y-3">
               {[
@@ -173,3 +173,4 @@ export default function CommunityPage() {
     </div>
   );
 }
+
