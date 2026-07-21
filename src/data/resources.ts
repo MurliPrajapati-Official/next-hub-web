@@ -1,7 +1,3 @@
-export const runtime = 'edge';
-
-import { NextResponse } from "next/server";
-
 export interface Resource {
   id: string;
   title: string;
@@ -18,7 +14,7 @@ export interface Resource {
   rating: number;
 }
 
-const mockResources: Resource[] = [
+export const mockResources: Resource[] = [
   {
     id: "1",
     title: "Next.js App Router Documentation",
@@ -321,48 +317,43 @@ const mockResources: Resource[] = [
   },
 ];
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const search = searchParams.get("q")?.toLowerCase();
-  const category = searchParams.get("category");
-  const sort = searchParams.get("sort");
-  const type = searchParams.get("type");
-  const difficulty = searchParams.get("difficulty");
-  const pricing = searchParams.get("pricing");
-
+export function filterResources(options: {
+  search?: string;
+  category?: string;
+  sort?: string;
+  type?: string;
+  difficulty?: string;
+  pricing?: string;
+}): Resource[] {
+  const { search, category, sort, type, difficulty, pricing } = options;
   let filtered = [...mockResources];
 
-  // Apply category filtering
   if (category && category !== "All") {
     filtered = filtered.filter((res) => res.category.toLowerCase() === category.toLowerCase());
   }
 
-  // Apply Content Type filtering
   if (type && type !== "All") {
     filtered = filtered.filter((res) => res.type.toLowerCase() === type.toLowerCase());
   }
 
-  // Apply Difficulty filtering
   if (difficulty && difficulty !== "All") {
     filtered = filtered.filter((res) => res.difficulty.toLowerCase() === difficulty.toLowerCase());
   }
 
-  // Apply Pricing filtering
   if (pricing && pricing !== "All") {
     filtered = filtered.filter((res) => res.pricing.toLowerCase() === pricing.toLowerCase());
   }
 
-  // Apply search filtering
   if (search) {
+    const q = search.toLowerCase();
     filtered = filtered.filter(
       (res) =>
-        res.title.toLowerCase().includes(search) ||
-        res.description.toLowerCase().includes(search) ||
-        res.tags.some((tag) => tag.toLowerCase().includes(search))
+        res.title.toLowerCase().includes(q) ||
+        res.description.toLowerCase().includes(q) ||
+        res.tags.some((tag) => tag.toLowerCase().includes(q))
     );
   }
 
-  // Apply sorting
   if (sort) {
     if (sort === "latest") {
       filtered.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -375,5 +366,5 @@ export async function GET(request: Request) {
     }
   }
 
-  return NextResponse.json(filtered);
+  return filtered;
 }

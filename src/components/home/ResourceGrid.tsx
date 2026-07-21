@@ -3,7 +3,8 @@
 import * as React from "react";
 import { Loader } from "@/components/ui/Loader";
 import { ResourceCard } from "@/components/ui/ResourceCard";
-import type { Resource } from "@/app/api/resources/route";
+import type { Resource } from "@/data/resources";
+import { filterResources } from "@/data/resources";
 
 interface ResourceGridProps {
   title: string;
@@ -28,41 +29,17 @@ export function ResourceGrid({
   const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
-    async function fetchResources() {
-      setIsLoading(true);
-      try {
-        const params = new URLSearchParams();
-        if (category && category !== "All") {
-          params.append("category", category);
-        }
-        if (searchQuery) {
-          params.append("q", searchQuery);
-        }
-        if (sortBy) {
-          params.append("sort", sortBy);
-        }
-        if (type && type !== "All") {
-          params.append("type", type);
-        }
-        if (difficulty && difficulty !== "All") {
-          params.append("difficulty", difficulty);
-        }
-        if (pricing && pricing !== "All") {
-          params.append("pricing", pricing);
-        }
-        
-        const url = `/api/resources${params.toString() ? `?${params.toString()}` : ''}`;
-        const res = await fetch(url);
-        const data = await res.json();
-        setResources(data);
-      } catch (error) {
-        console.error("Failed to fetch resources:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    fetchResources();
+    setIsLoading(true);
+    const data = filterResources({
+      category,
+      search: searchQuery,
+      sort: sortBy,
+      type,
+      difficulty,
+      pricing,
+    });
+    setResources(data);
+    setIsLoading(false);
   }, [category, searchQuery, sortBy, type, difficulty, pricing]);
 
   return (
