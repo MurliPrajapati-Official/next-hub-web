@@ -156,28 +156,28 @@ export function ResourceCard({ resource }: ResourceCardProps) {
         </div>
 
         {/* Action Buttons merged */}
-        <div className="flex items-center gap-2 pt-4 border-t border-border/40">
+        <div className="flex flex-col xs:flex-row items-stretch gap-2 pt-4 border-t border-border/40 mt-auto">
           <button
             onClick={handleBookmark}
-            className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold uppercase tracking-wider rounded-none border transition-all cursor-pointer ${
+            className={`flex-1 flex items-center justify-center gap-2 px-2 py-2.5 text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-none border transition-all cursor-pointer ${
               bookmarked 
                 ? "bg-primary/10 border-primary text-primary" 
                 : "border-border/60 text-foreground/50 hover:border-foreground/30 hover:text-foreground"
             } ${animateBookmark ? "animate-bookmark" : ""}`}
             title={bookmarked ? "Remove Bookmark" : "Add Bookmark"}
           >
-            <Bookmark className={`w-3.5 h-3.5 ${bookmarked ? "fill-current" : ""}`} />
-            Bookmark
+            <Bookmark className={`w-3.5 h-3.5 shrink-0 ${bookmarked ? "fill-current" : ""}`} />
+            <span className="truncate">Bookmark</span>
           </button>
           
           <a
             href={resource.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-[1.5] flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold uppercase tracking-wider rounded-none bg-surface-hover text-foreground/70 hover:bg-primary hover:text-white group-hover:bg-primary group-hover:text-white transition-all cursor-pointer"
+            className="flex-[1.5] flex items-center justify-center gap-2 px-2 py-2.5 text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-none bg-surface-hover text-foreground/70 hover:bg-primary hover:text-white group-hover:bg-primary group-hover:text-white transition-all cursor-pointer"
           >
-            Open Resource
-            <ExternalLink className="w-3.5 h-3.5" />
+            <span className="truncate">Open Resource</span>
+            <ExternalLink className="w-3.5 h-3.5 shrink-0" />
           </a>
         </div>
       </div>

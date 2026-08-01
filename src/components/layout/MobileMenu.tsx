@@ -24,7 +24,7 @@ export function MobileMenu() {
       <Button
         variant="ghost"
         size="icon"
-        className="md:hidden"
+        className="lg:hidden"
         onClick={() => setIsOpen(true)}
         aria-label="Open menu"
       >
@@ -32,7 +32,7 @@ export function MobileMenu() {
       </Button>
 
       {isOpen && (
-        <div className="fixed inset-0 z-[200] md:hidden">
+        <div className="fixed inset-0 z-[200] lg:hidden">
           {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/60"
